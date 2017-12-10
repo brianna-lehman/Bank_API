@@ -54,9 +54,9 @@ def initdb_command():
 	db.session.add(loan_two)
 	db.session.add(loan_three)
 
-	# certificate_one = Certificate("cate38", "certificate for cate38", 1000, datetime.now(), datetime.now()+relativedelta(years=15))
-	# certificate_two = Certificate("leah223", "certificate for leah223", 500, datetime.now(), datetime.now()+relativedelta(years=10))
-	# certificate_three = Certificate("marcia12", "certificate for marcia12", 100000, datetime.now(), datetime.now()+relativedelta(years=20))
+	# certificate_one = Certificate("cate38", "certificate for cate38", 1000, datetime.now(), datetime.now()+relativedelta(years=15), 0.05)
+	# certificate_two = Certificate("leah223", "certificate for leah223", 500, datetime.now(), datetime.now()+relativedelta(years=10), 0.03)
+	# certificate_three = Certificate("marcia12", "certificate for marcia12", 100000, datetime.now(), datetime.now()+relativedelta(years=20), 0.01)
 	# db.session.add(certificate_one)
 	# db.session.add(certificate_two)
 	# db.session.add(certificate_three)
@@ -77,10 +77,9 @@ class SavingsEndpoint(Resource):
 # "/checking/<username>"
 class CheckingEndpoint(Resource):
 	def get(self, username):
-		# given username, get checking data for that user, return data as json
+		# given username, get checking data for that user, return data as dictionary
 		checking_account = Checking.query.filter_by(username=username).first()
 		if checking_account:
-			# return object
 			return checking_account.to_dict()
 		else:
 			return error(400, "Checking doesn't exists under {}".format(username))
@@ -88,7 +87,7 @@ class CheckingEndpoint(Resource):
 # "/loan/<username>"
 class LoanEndpoint(Resource):
 	def get(self, username):
-		# given username, get loan data for that user, return data as json
+		# given username, get loan data for that user, return data as dictionary
 		loan = Loan.query.filter_by(username=username).first()
 		if loan:
 			return loan.to_dict()
@@ -98,7 +97,7 @@ class LoanEndpoint(Resource):
 # "/certificate/<username>"
 # class CertificateEndpoint(Resource):
 # 	def get(self, username):
-# 		# given username, get certificate data for that user, return data as json
+# 		# given username, get certificate data for that user, return data
 # 		certificate = Certificate.query.filter_by(username=username).first()
 # 		if certificate:
 # 			return certificate.to_dict()
@@ -108,12 +107,12 @@ class LoanEndpoint(Resource):
 # "/<username>"
 class ProfileEndpoint(Resource):
 	def get(self, username):
-		# given username, get profile for that user, return data as json
+		# given username, get profile for that user, return data as dictionary
 		user = Profile.query.filter_by(username=username).first()
 		if user:
 			return user.to_dict()
 		else:
-			return error(400, "{} doesn't exist".format(username))
+			return error(400, "{} doesn't exist in the database".format(username))
 
 	# "/<username>?param=<param>&value=<value>"
 	def put(self, username):

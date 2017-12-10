@@ -210,7 +210,16 @@ C:\Bank_API>curl -X PUT "http://127.0.0.1:5000/api/cate38?param=mobile_phone&val
 }
 ```
 
+*Invalid Address*
+```
+C:\Bank_API>curl -X PUT -g "http://127.0.0.1:5000/api/marcia12?param=mailing_address&value={'street':'42+Kralltown+Rd','city':'Kralltown','state':'PA','zipcode':''}"
+{
+    "status": 400,
+    "message": "Param mailing_address or value {'street': '42 Kralltown Rd', 'city': 'Kralltown', 'state': 'PA', 'zipcode': ''} is invalid"
+}
+```
+
 # Errors
 
-* Certificates can't be added to the database or requested
+* Certificates can't be added to the database or requested, but I still kept the commented out code for it in bank.py
 * Valid emails are marked as invalid
