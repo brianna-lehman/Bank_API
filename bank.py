@@ -54,12 +54,12 @@ def initdb_command():
 	db.session.add(loan_two)
 	db.session.add(loan_three)
 
-	# certificate_one = Certificate("cate38", "certificate for cate38", 1000, datetime.now(), datetime.now()+relativedelta(years=15), 0.05)
-	# certificate_two = Certificate("leah223", "certificate for leah223", 500, datetime.now(), datetime.now()+relativedelta(years=10), 0.03)
-	# certificate_three = Certificate("marcia12", "certificate for marcia12", 100000, datetime.now(), datetime.now()+relativedelta(years=20), 0.01)
-	# db.session.add(certificate_one)
-	# db.session.add(certificate_two)
-	# db.session.add(certificate_three)
+	certificate_one = Certificate("cate38", "certificate for cate38", 1000, datetime.now(), datetime.now()+relativedelta(years=15), float(0.05))
+	certificate_two = Certificate("leah223", "certificate for leah223", 500, datetime.now(), datetime.now()+relativedelta(years=10), float(0.03))
+	certificate_three = Certificate("marcia12", "certificate for marcia12", 100000, datetime.now(), datetime.now()+relativedelta(years=20), float(0.01))
+	db.session.add(certificate_one)
+	db.session.add(certificate_two)
+	db.session.add(certificate_three)
 
 	db.session.commit()
 
@@ -95,14 +95,14 @@ class LoanEndpoint(Resource):
 			return error(400, "Loan doesn't exists under {}".format(username))
 
 # "/certificate/<username>"
-# class CertificateEndpoint(Resource):
-# 	def get(self, username):
-# 		# given username, get certificate data for that user, return data
-# 		certificate = Certificate.query.filter_by(username=username).first()
-# 		if certificate:
-# 			return certificate.to_dict()
-# 		else:
-# 			return error(400, "Certificate doesn't exists under {}".format(username))
+class CertificateEndpoint(Resource):
+	def get(self, username):
+		# given username, get certificate data for that user, return data
+		certificate = Certificate.query.filter_by(username=username).first()
+		if certificate:
+			return certificate.to_dict()
+		else:
+			return error(400, "Certificate doesn't exists under {}".format(username))
 
 # "/<username>"
 class ProfileEndpoint(Resource):
@@ -141,6 +141,7 @@ def valid_input(param, value):
 	valid = True
 
 	if param == "email_address":
+		value = value.strip('\'')
 		pattern = re.compile("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
 		if not pattern.match(value):
 			valid = False
@@ -177,7 +178,7 @@ def error(status_code, error_message):
 api.add_resource(SavingsEndpoint, '/api/savings/<username>')
 api.add_resource(CheckingEndpoint, '/api/checking/<username>')
 api.add_resource(LoanEndpoint, '/api/loan/<username>')
-# api.add_resource(CertificateEndpoint, '/api/certificate/<username>')
+api.add_resource(CertificateEndpoint, '/api/certificate/<username>')
 api.add_resource(ProfileEndpoint, '/api/<username>')
 
 class Address():

@@ -62,10 +62,11 @@ class Certificate(db.Model):
 	description = db.Column(db.String(180), nullable=False)
 	balance = db.Column(db.Float, nullable=False)
 	last_activity = db.Column(db.DateTime, nullable=False)
-	iterest_rate = db.Column(db.Float, nullable=True)
+	interest_rate = db.Column(db.Float, nullable=False)
 	maturity_date = db.Column(db.DateTime, nullable=False)
 
-	def __init__(self, username, description, balance, last_activity, maturity_date, interest_rate=.05):
+	def __init__(self, username, description, balance, last_activity, maturity_date, interest_rate=0.05):
+		print("%d" %interest_rate)
 		self.username = username
 		self.description = description
 		self.balance = balance
