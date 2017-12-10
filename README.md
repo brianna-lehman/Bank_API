@@ -20,6 +20,8 @@ C:\Bank_API>virtual_env\Scripts\activate.bat
 (virtual_env) C:\Bank_API>flask initdb
 ```
 
+Creates three users in the database (cate38, leah223, and marcia12) each wih one savings account, one checking account, one loan, and one certificate each
+
 # Run
 
 ```
@@ -153,6 +155,15 @@ C:\Bank_API>curl http://localhost:5000/api/certificate/cate38
     "last_activity": "12/10/2017",
     "interest_rate": 0.05,
     "maturity_date": "12/10/2032"
+}
+```
+
+*Invalid Certificate*
+```
+C:\Bank_API>curl http://localhost:5000/api/certificate/fake_username
+{
+    "status": 400,
+    "message": "Certificate doesn't exists under fake_username"
 }
 ```
 
