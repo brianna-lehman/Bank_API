@@ -121,7 +121,6 @@ class ProfileEndpoint(Resource):
 		parser.add_argument('value', type=str)
 
 		args = parser.parse_args()
-		print(args)
 		param = args['param']
 		value = args['value']
 
@@ -150,10 +149,8 @@ def valid_input(param, value):
 			valid = False
 	if param == "mailing_address":
 		value = ast.literal_eval(value)
-		print("JSON "+str(value))
 		if value['street'] and value['city'] and value['state'] and value['zipcode']:
 			value = Address(value['street'], value['city'], value['state'], value['zipcode'])
-			print("Address Object "+str(value.to_dict))
 			valid = True
 		else:
 			valid = False
