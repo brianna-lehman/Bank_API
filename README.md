@@ -20,7 +20,7 @@ C:\Bank_API>virtual_env\Scripts\activate.bat
 (virtual_env) C:\Bank_API>flask initdb
 ```
 
-Creates three users in the database (cate38, leah223, and marcia12) each wih one savings account, one checking account, one loan, and one certificate each
+Creates three users in the database (cate38, leah223, and marcia12) each with one savings account, one checking account, one loan, and one certificate
 
 # Run
 
