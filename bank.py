@@ -135,7 +135,7 @@ class ProfileEndpoint(Resource):
 				user = Profile.query.filter_by(username=username).first()
 				return user.to_dict()
 			else:
-				return error(400, "{} doesn't exist".format(username))
+				return error(400, "{} doesn't exist in the database".format(username))
 		else:
 			return error(400, "Param {} or value {} is invalid".format(param, value))
 
@@ -143,7 +143,6 @@ def valid_input(param, value):
 	valid = True
 
 	if param == "email_address":
-		# check that value follows '\w+[@]\w+[.]\w{3}' regex
 		if not re.match("\w+[@]\w+[.]\w{3}", value):
 			valid = False
 	if param == "home_phone" or "mobile_phone":
