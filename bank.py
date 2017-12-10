@@ -4,6 +4,8 @@ from models import db, Savings, Checking, Loan, Certificate, Profile
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 import os
+import re
+import ast
 
 app = Flask(__name__)
 api = Api(app)
@@ -52,12 +54,12 @@ def initdb_command():
 	db.session.add(loan_two)
 	db.session.add(loan_three)
 
-	certificate_one = Certificate("cate38", "certificate for cate38", 1000, datetime.now(), datetime.now()+relativedelta(years=15), interest_rate=0.05)
-	certificate_two = Certificate("leah223", "certificate for leah223", 500, datetime.now(), datetime.now()+relativedelta(years=10), interest_rate=0.03)
-	certificate_three = Certificate("marcia12", "certificate for marcia12", 100000, datetime.now(), datetime.now()+relativedelta(years=20), interest_rate=0.1)
-	db.session.add(certificate_one)
-	db.session.add(certificate_two)
-	db.session.add(certificate_three)
+	# certificate_one = Certificate("cate38", "certificate for cate38", 1000, datetime.now(), datetime.now()+relativedelta(years=15))
+	# certificate_two = Certificate("leah223", "certificate for leah223", 500, datetime.now(), datetime.now()+relativedelta(years=10))
+	# certificate_three = Certificate("marcia12", "certificate for marcia12", 100000, datetime.now(), datetime.now()+relativedelta(years=20))
+	# db.session.add(certificate_one)
+	# db.session.add(certificate_two)
+	# db.session.add(certificate_three)
 
 	db.session.commit()
 
@@ -94,52 +96,72 @@ class LoanEndpoint(Resource):
 			return error(400, "Loan doesn't exists under {}".format(username))
 
 # "/certificate/<username>"
-class CertificateEndpoint(Resource):
-	def get(self, username):
-		# given username, get certificate data for that user, return data as json
-		certificate = Certificate.query.filter_by(username=username).first()
-		if certificate:
-			return certificate.to_dict()
-		else:
-			return error(400, "Certificate doesn't exists under {}".format(username))
+# class CertificateEndpoint(Resource):
+# 	def get(self, username):
+# 		# given username, get certificate data for that user, return data as json
+# 		certificate = Certificate.query.filter_by(username=username).first()
+# 		if certificate:
+# 			return certificate.to_dict()
+# 		else:
+# 			return error(400, "Certificate doesn't exists under {}".format(username))
 
 # "/<username>"
-'''class ProfileEndpoint(Resource):
+class ProfileEndpoint(Resource):
 	def get(self, username):
 		# given username, get profile for that user, return data as json
+		user = Profile.query.filter_by(username=username).first()
+		if user:
+			return user.to_dict()
+		else:
+			return error(400, "{} doesn't exist".format(username))
 
 	# "/<username>?param=<param>&value=<value>"
 	def put(self, username):
-		input_data = request.args.to_dict()
-		param = input_data['param']
-		value = input_data['value']
+		parser = reqparse.RequestParser()
+		parser.add_argument('param', type=str)
+		parser.add_argument('value', type=str)
+
+		args = parser.parse_args()
+		print(args)
+		param = args['param']
+		value = args['value']
+
 		input_is_valid, value = valid_input(param, value)
 		if input_is_valid:
 			user = Profile.query.filter_by(username=username).first()
 			if user:
 				# update value of param
 				update_profile(param, value, user)
-				# return profile data for that user, 200
+				user = Profile.query.filter_by(username=username).first()
+				return user.to_dict()
 			else:
 				return error(400, "{} doesn't exist".format(username))
 		else:
 			return error(400, "Param {} or value {} is invalid".format(param, value))
 
 def valid_input(param, value):
-	# if email_address:
-	# 	check that value follows '\w+[@]\w+[.]\w{3}' regex
-	#	return true, value
-	# if home_phone or mobile_phone:
-	# 	check that value is 10 digits long
-	#	return true, value
-	# if mailing_address:
-	#	turn value (dictionary) into Address
-	# 	check that value has street, city, state, and zip
-	#	return true, address
-	# else:
-	#	return false, value
+	valid = True
 
-def update_profile(param, value, user);
+	if param == "email_address":
+		# check that value follows '\w+[@]\w+[.]\w{3}' regex
+		if not re.match("\w+[@]\w+[.]\w{3}", value):
+			valid = False
+	if param == "home_phone" or "mobile_phone":
+		if len(value) != 10:
+			valid = False
+	if param == "mailing_address":
+		value = ast.literal_eval(value)
+		print("JSON "+str(value))
+		if value['street'] and value['city'] and value['state'] and value['zipcode']:
+			value = Address(value['street'], value['city'], value['state'], value['zipcode'])
+			print("Address Object "+str(value.to_dict))
+			valid = True
+		else:
+			valid = False
+
+	return valid, value
+
+def update_profile(param, value, user):
 	if param == "mailing_address":
 		user.mailing_address = value
 	elif param == "home_phone":
@@ -149,7 +171,7 @@ def update_profile(param, value, user);
 	elif param == "email_address":
 		user.email_address = value
 
-	db.session.commit()'''
+	db.session.commit()
 
 def error(status_code, error_message):
 	return {'status': status_code, 'message': error_message}
@@ -157,8 +179,8 @@ def error(status_code, error_message):
 api.add_resource(SavingsEndpoint, '/api/savings/<username>')
 api.add_resource(CheckingEndpoint, '/api/checking/<username>')
 api.add_resource(LoanEndpoint, '/api/loan/<username>')
-api.add_resource(CertificateEndpoint, '/api/certificate/<username>')
-# api.add_resource(ProfileEndpoint, '/api/<username>')
+# api.add_resource(CertificateEndpoint, '/api/certificate/<username>')
+api.add_resource(ProfileEndpoint, '/api/<username>')
 
 class Address():
 

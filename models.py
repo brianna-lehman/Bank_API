@@ -62,10 +62,10 @@ class Certificate(db.Model):
 	description = db.Column(db.String(180), nullable=False)
 	balance = db.Column(db.Float, nullable=False)
 	last_activity = db.Column(db.DateTime, nullable=False)
-	iterest_rate = db.Column(db.Float, nullable=False)
+	iterest_rate = db.Column(db.Float, nullable=True)
 	maturity_date = db.Column(db.DateTime, nullable=False)
 
-	def __init__(self, username, description, balance, last_activity, maturity_date, interest_rate):
+	def __init__(self, username, description, balance, last_activity, maturity_date, interest_rate=.05):
 		self.username = username
 		self.description = description
 		self.balance = balance
@@ -92,3 +92,6 @@ class Profile(db.Model):
 		self.email_address = email_address
 		self.home_phone = home_phone
 		self.mobile_phone = mobile_phone
+
+	def to_dict(self):
+		return {'record_id':self.record_id, 'username':self.username, 'name':self.name, 'mailing_address':self.mailing_address.to_dict(), 'home_phone':self.home_phone, 'mobile_phone':self.mobile_phone, 'email_address':self.email_address}
