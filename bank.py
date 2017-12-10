@@ -52,9 +52,9 @@ def initdb_command():
 	db.session.add(loan_two)
 	db.session.add(loan_three)
 
-	certificate_one = Certificate("cate38", "certificate for cate38", 1000, datetime.now(), 0.05, datetime.now()+relativedelta(years=15))
-	certificate_two = Certificate("leah223", "certificate for leah223", 500, datetime.now(), 0.03, datetime.now()+relativedelta(years=10))
-	certificate_three = Certificate("marcia12", "certificate for marcia12", 100000, datetime.now(), 0.15, datetime.now()+relativedelta(years=20))
+	certificate_one = Certificate("cate38", "certificate for cate38", 1000, datetime.now(), datetime.now()+relativedelta(years=15), interest_rate=0.05)
+	certificate_two = Certificate("leah223", "certificate for leah223", 500, datetime.now(), datetime.now()+relativedelta(years=10), interest_rate=0.03)
+	certificate_three = Certificate("marcia12", "certificate for marcia12", 100000, datetime.now(), datetime.now()+relativedelta(years=20), interest_rate=0.1)
 	db.session.add(certificate_one)
 	db.session.add(certificate_two)
 	db.session.add(certificate_three)
