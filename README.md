@@ -17,7 +17,7 @@ C:\Bank_API>virtual_env\Scripts\activate.bat
 
 ```
 (virtual_env) C:\Bank_API>set FLASK_APP=bank.py
-(virtual_env) C:]Bank_API>flask initdb
+(virtual_env) C:\Bank_API>flask initdb
 ```
 
 # Run
