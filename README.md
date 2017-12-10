@@ -26,11 +26,13 @@ C:\Bank_API>virtual_env\Scripts\activate.bat
 (virtual_env) C:\Bank_API>flask run
 ```
 
-Open a new command line while the flask app is running and test using curl, similar to the examples below.
+Run curl in a separate command line, similar to the examples below.
 
 # Examples
 
-**Get Profile**
+**Get**
+
+*Profile*
 ```
 C:\Bank_API>curl http://127.0.0.1:5000/api/leah223
 {
@@ -82,6 +84,8 @@ C:\Bank_API>curl http://127.0.0.1:5000/api/marcia12
     "email_address": "marcia12@example.com"
 }
 ```
+
+*Invalid Profile*
 ```
 C:\Bank_API>curl http://127.0.0.1:5000/api/fake_username
 {
@@ -90,7 +94,7 @@ C:\Bank_API>curl http://127.0.0.1:5000/api/fake_username
 }
 ```
 
-**Get Savings**
+*Savings*
 ```
 C:\Bank_API>curl http://127.0.0.1:5000/api/savings/cate38
 {
@@ -102,7 +106,7 @@ C:\Bank_API>curl http://127.0.0.1:5000/api/savings/cate38
 }
 ```
 
-**Get Checking**
+*Checking*
 ```
 C:\Users\Bri\Desktop\Bank_API>curl http://127.0.0.1:5000/api/checking/marcia12
 {
@@ -124,7 +128,7 @@ C:\Bank_API>curl http://127.0.0.1:5000/api/checking/leah223
 }
 ```
 
-**Get Loan**
+*Loan*
 ```
 C:\Bank_API>curl http://127.0.0.1:5000/api/loan/leah223
 {
@@ -139,6 +143,8 @@ C:\Bank_API>curl http://127.0.0.1:5000/api/loan/leah223
 ```
 
 **Put**
+
+*Modify Address*
 ```
 C:\Bank_API>curl -X PUT -g "http://127.0.0.1:5000/api/marcia12?param=mailing_address&value={'street':'42+Kralltown+Rd','city':'Kralltown','state':'PA','zipcode':'17019'}"
 {
@@ -156,6 +162,8 @@ C:\Bank_API>curl -X PUT -g "http://127.0.0.1:5000/api/marcia12?param=mailing_add
     "email_address": "marcia12@example.com"
 }
 ```
+
+*Modify Home Phone*
 ```
 C:\Bank_API>curl -X PUT "http://127.0.0.1:5000/api/marcia12?param=home_phone&value=3827948372"
 {
@@ -173,6 +181,8 @@ C:\Bank_API>curl -X PUT "http://127.0.0.1:5000/api/marcia12?param=home_phone&val
     "email_address": "marcia12@example.com"
 }
 ```
+
+*Modify Mobile Phone*
 ```
 C:\Bank_API>curl -X PUT "http://127.0.0.1:5000/api/cate38?param=mobile_phone&value=3294297481"
 {
@@ -190,3 +200,17 @@ C:\Bank_API>curl -X PUT "http://127.0.0.1:5000/api/cate38?param=mobile_phone&val
     "email_address": "cate38@example.com"
 }
 ```
+
+*Invalid Phone*
+```
+C:\Bank_API>curl -X PUT "http://127.0.0.1:5000/api/cate38?param=mobile_phone&value=4297481"
+{
+    "status": 400,
+    "message": "Param mobile_phone or value 4297481 is invalid"
+}
+```
+
+# Errors
+
+* Certificates can't be added to the database or requested
+* Valid emails are marked as invalid

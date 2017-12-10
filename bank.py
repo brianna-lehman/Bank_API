@@ -143,7 +143,8 @@ def valid_input(param, value):
 	valid = True
 
 	if param == "email_address":
-		if not re.match("\w+[@]\w+[.]\w{3}", value):
+		pattern = re.compile("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
+		if not pattern.match(value):
 			valid = False
 	if param == "home_phone" or "mobile_phone":
 		if len(value) != 10:
@@ -157,6 +158,8 @@ def valid_input(param, value):
 			valid = True
 		else:
 			valid = False
+	else:
+		valid = False
 
 	return valid, value
 
