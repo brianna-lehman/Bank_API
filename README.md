@@ -219,7 +219,10 @@ C:\Bank_API>curl -X PUT -g "http://127.0.0.1:5000/api/marcia12?param=mailing_add
 }
 ```
 
-# Errors
+# Errors and Improvements
 
 * Certificates can't be added to the database or requested, but I still kept the commented out code for it in bank.py
 * Valid emails are marked as invalid
+* Duplication could be improved by creating a universal to_dict() method instead of individual, repeated, to_dict() methods in every model.
+* Savings, Checking, Loan, and Certificate models could extend from a more generic structure to reduce repeated information.
+* The type of endpoint to return (Savings, Checking, Loan, or Certificate) could be passed as a parameter in the request so that there doesn't need to be a class and get method for each endpoint, just one get method that takes the passed in structure parameter to know which account to return.
