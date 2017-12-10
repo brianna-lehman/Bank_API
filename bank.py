@@ -1,7 +1,8 @@
 from flask_restful import reqparse, abort, fields, marshal_with, Api, Resource, request
 from flask import Flask, request, session, url_for, redirect, render_template, abort, g, flash, _app_ctx_stack
 from models import db, Savings, Checking, Loan, Certificate, Profile
-from datetime import datetime
+from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 import os
 
 app = Flask(__name__)
@@ -30,12 +31,33 @@ def initdb_command():
 	db.session.add(user_three)
 
 	# create savings, checking, certificate, and loan for each user
-	savings_one = Savings("cate38", "savings accound for cate38", 1000.42, datetime.now())
-	savings_two = Savings("leah223", "savings accound for leah223", 583792.83, datetime.now())
-	savings_three = Savings("marcia12", "savings accound for marcia12", 100000, datetime.now())
+	savings_one = Savings("cate38", "savings account for cate38", 1000.42, datetime.now())
+	savings_two = Savings("leah223", "savings account for leah223", 583792.83, datetime.now())
+	savings_three = Savings("marcia12", "savings account for marcia12", 100000, datetime.now())
 	db.session.add(savings_one)
 	db.session.add(savings_two)
 	db.session.add(savings_three)
+
+	checking_one = Checking("cate38", "checking account for cate38", 664839.38, datetime.now())
+	checking_two = Checking("leah223", "checking account for leah223", 3829.33, datetime.now())
+	checking_three = Checking("marcia12", "checking account for marcia12", 582.11, datetime.now())
+	db.session.add(checking_one)
+	db.session.add(checking_two)
+	db.session.add(checking_three)
+
+	loan_one = Loan("cate38", "loan for cate38", 100000, datetime.now(), datetime.now()+relativedelta(years=5), 500)
+	loan_two = Loan("leah223", "loan for leah223", 1000, datetime.now(), datetime.now()+relativedelta(years=8), 500)
+	loan_three = Loan("marcia12", "loan for marcia12", 500000, datetime.now(), datetime.now()+relativedelta(years=10), 1000)
+	db.session.add(loan_one)
+	db.session.add(loan_two)
+	db.session.add(loan_three)
+
+	certificate_one = Certificate("cate38", "certificate for cate38", 1000, datetime.now(), 0.05, datetime.now()+relativedelta(years=15))
+	certificate_two = Certificate("leah223", "certificate for leah223", 500, datetime.now(), 0.03, datetime.now()+relativedelta(years=10))
+	certificate_three = Certificate("marcia12", "certificate for marcia12", 100000, datetime.now(), 0.15, datetime.now()+relativedelta(years=20))
+	db.session.add(certificate_one)
+	db.session.add(certificate_two)
+	db.session.add(certificate_three)
 
 	db.session.commit()
 
@@ -45,7 +67,6 @@ class SavingsEndpoint(Resource):
 		# given username, get savings data for that user, return data as json
 		saving_account = Savings.query.filter_by(username=username).first()
 		if saving_account:
-			# turn the data from saving_account into json object
 			return saving_account.to_dict()
 		else:
 			return error(400, "Savings doesn't exists under {}".format(username))
@@ -58,6 +79,7 @@ class CheckingEndpoint(Resource):
 		checking_account = Checking.query.filter_by(username=username).first()
 		if checking_account:
 			# return object
+			return checking_account.to_dict()
 		else:
 			return error(400, "Checking doesn't exists under {}".format(username))
 
@@ -65,9 +87,9 @@ class CheckingEndpoint(Resource):
 class LoanEndpoint(Resource):
 	def get(self, username):
 		# given username, get loan data for that user, return data as json
-		loan_account = Checking.query.filter_by(username=username).first()
-		if loan_account:
-			# return loan_account.to_json()
+		loan = Loan.query.filter_by(username=username).first()
+		if loan:
+			return loan.to_dict()
 		else:
 			return error(400, "Loan doesn't exists under {}".format(username))
 
@@ -75,14 +97,14 @@ class LoanEndpoint(Resource):
 class CertificateEndpoint(Resource):
 	def get(self, username):
 		# given username, get certificate data for that user, return data as json
-		certificate_account = Certificate.query.filter_by(username=username).first()
-		if certificate_account:
-			# return certificate_account.to_json()
+		certificate = Certificate.query.filter_by(username=username).first()
+		if certificate:
+			return certificate.to_dict()
 		else:
 			return error(400, "Certificate doesn't exists under {}".format(username))
 
 # "/<username>"
-class ProfileEndpoint(Resource):
+'''class ProfileEndpoint(Resource):
 	def get(self, username):
 		# given username, get profile for that user, return data as json
 
@@ -127,16 +149,16 @@ def update_profile(param, value, user);
 	elif param == "email_address":
 		user.email_address = value
 
-	db.session.commit()
+	db.session.commit()'''
 
 def error(status_code, error_message):
-	return {'status': status_code, 'message': message}
+	return {'status': status_code, 'message': error_message}
 
 api.add_resource(SavingsEndpoint, '/api/savings/<username>')
 api.add_resource(CheckingEndpoint, '/api/checking/<username>')
 api.add_resource(LoanEndpoint, '/api/loan/<username>')
 api.add_resource(CertificateEndpoint, '/api/certificate/<username>')
-api.add_resource(ProfileEndpoint, '/api/<username>')
+# api.add_resource(ProfileEndpoint, '/api/<username>')
 
 class Address():
 
@@ -145,6 +167,9 @@ class Address():
 		self.city = city
 		self.state = state
 		self.zipcode = zipcode
+
+	def to_dict(self):
+		return {'street':self.street, 'city':self.city, 'state':self.state, 'zipcode':self.zipcode}
 
 if __name__ == '__main__':
 	app.run(debug=True)
